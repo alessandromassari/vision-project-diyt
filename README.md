@@ -1,54 +1,54 @@
-# vision-project-diyt
-# Masked Autoencoder Avanzato per Anomaly Detection 
+# Advanced Masked Autoencoder for Industrial Anomaly Detection
 
-[![Licenza](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md) 
-Questo progetto presenta un'implementazione avanzata di un **Masked Autoencoder (MAE)** basato su Vision Transformer (ViT), progettato specificamente per il task di **rilevamento di anomalie non supervisionato** in contesti industriali. Il modello è stato testato e validato sui dataset di riferimento **MVTec AD** e **BTAD**.
+This project introduces an advanced **Masked Autoencoder (MAE)** architecture, built upon a Vision Transformer (ViT), for **unsupervised industrial anomaly detection and localization**. The model is designed to learn the normal appearance of an object from defect-free images and then identify anomalies by detecting deviations in its reconstruction.
 
-L'obiettivo è insegnare al modello a "comprendere" l'aspetto di un oggetto normale. Quando viene presentata un'immagine con un difetto, il modello non riesce a ricostruirla correttamente, permettendoci di identificare e localizzare l'anomalia attraverso l'errore di ricostruzione.
+The core idea is that the model, once an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and pinpointing anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
 
 <p align="center">
-  <img src="[INSERISCI QUI IL PERCORSO A UN DIAGRAMMA DELL'ARCHITETTURA]" width="80%">
+  <img src="[![image](https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc)
+]" width="80%">
 </p>
 
 ---
 
-## ✨ Caratteristiche Principali
+## ✨ Key Features
 
-Questo modello si distingue dalle implementazioni standard di MAE per diverse caratteristiche innovative pensate per migliorare le performance nell'anomaly detection:
+The vision that guides our work was to have a fast and light model trying to assure at the same time good and comparable performance, sort of 
+This model enhances the standard MAE framework with several innovative features tailored for high-performance anomaly detection: (spoiler: don't expect sota performance)
 
-* **Aggregazione di Feature Multi-Scala**: A differenza di un MAE standard che usa solo l'output finale dell'encoder, questo modello estrae feature da **strati intermedi** dell'encoder. Un `FeatureAggregationModule` le combina per creare una rappresentazione più ricca, che cattura sia dettagli di basso livello che informazioni semantiche di alto livello.
+* **Multi-Scale Feature Pyramid**: Unlike a standard MAE which only uses the final encoder output, this model extracts features from **intermediate encoder layers**. A `FeatureAggregationModule` then combines them to create a richer, multi-scale representation that captures both low-level textures and high-level semantics.
 
-* **Strategia di Masking a Blocchi (Block-Wise Masking)**: Invece di mascherare patch casuali e sparse, viene applicato un mascheramento a blocchi contigui. Questo costringe il modello a imparare a ricostruire regioni più ampie, migliorando la comprensione del contesto spaziale.
+* **Block-Wise Masking Strategy**: Instead of masking random, sparse patches, this model employs a block-wise masking strategy. This forces the model to learn to reconstruct larger, contiguous regions, thereby improving its understanding of spatial context and long-range dependencies.
 
-* **Embedding Posizionale Ibrido**: Combina embedding posizionali **apprendibili** (che si adattano ai dati) e **sinusoidali** (che forniscono una solida base geometrica), sfruttando i vantaggi di entrambi gli approcci.
+* **Hybrid Positional Embeddings**: The model leverages both **learnable** and **sinusoidal** positional embeddings. This hybrid approach combines the data-adaptive nature of learnable embeddings with the strong geometric foundation of fixed sinusoidal embeddings.
 
-* **Normalizzazione Dinamica (DyT)**: Utilizza un layer di normalizzazione personalizzato, `DyT`, che introduce un parametro apprendibile `alpha` all'interno di una funzione `tanh`, offrendo maggiore flessibilità rispetto a un `LayerNorm` standard.
+* **Dynamic Normalization (DyT)**: A custom `DyT` normalization layer is used in place of the standard `LayerNorm`. It introduces a learnable `alpha` parameter within a `tanh` activation, offering more flexible and dynamic normalization.
 
-* **Decoder Leggero e Attento**: Seguendo la filosofia MAE, il decoder è significativamente più "leggero" dell'encoder (`depth_dec=2`). È progettato per utilizzare le feature aggregate dall'encoder, permettendo una ricostruzione più informata.
+* **Lightweight, Attentive Decoder**: Adhering to the MAE philosophy, the decoder is significantly shallower than the encoder (`depth_dec=2`). It is architecturally prepared to receive the aggregated features from the encoder pyramid, allowing for a more informed and context-aware reconstruction process.
 
 ---
 
-## 🏛️ Architettura del Modello
+## 🏛️ Model Architecture
 
-Il flusso di dati attraverso il modello è il seguente:
+The data flows through the model as follows:
 
-1.  **Input e Patching**: L'immagine di input viene divisa in patch non sovrapposte.
-2.  **Embedding**: Ad ogni patch viene aggiunto un embedding posizionale ibrido (sinusoidale + apprendibile).
-3.  **Masking**: Una porzione significativa delle patch viene mascherata utilizzando la strategia a blocchi (solo durante il training).
-4.  **Encoder**: Le patch visibili vengono processate da un profondo encoder Transformer (`depth_enc=16`). Durante questo passaggio, gli output di strati intermedi vengono salvati.
-5.  **Feature Aggregation**: Il `FeatureAggregationModule` prende gli output intermedi, li proietta in uno spazio comune e li combina in un'unica, ricca mappa di feature.
-6.  **Decoder**: Un decoder Transformer leggero (`depth_dec=2`) riceve le patch codificate e le feature aggregate per ricostruire le patch originali (sia quelle visibili che quelle mascherate).
-7.  **Output**: Il modello restituisce le patch dell'immagine ricostruita.
+1.  **Input & Patching**: The input image is divided into a sequence of non-overlapping patches.
+2.  **Embedding**: A hybrid (sinusoidal + learnable) positional embedding is added to each patch token.
+3.  **Masking**: A significant portion of the patches is hidden using the block-wise masking strategy (during training only).
+4.  **Encoder**: The visible patches are processed by a deep Transformer encoder (`depth_enc=16`). During this pass, outputs from intermediate layers are collected.
+5.  **Feature Aggregation**: The `FeatureAggregationModule` takes the collected multi-level features and combines them into a single, rich feature map.
+6.  **Decoder**: A shallow Transformer decoder (`depth_dec=2`) receives the encoded patches and is designed to leverage the aggregated features to reconstruct the original full set of image patches.
+7.  **Output**: The model outputs the reconstructed image patches.
 
 <p align="center">
-  <img src="[INSERISCI QUI IL PERCORSO A ESEMPI DI RICOSTRUZIONE]" width="90%">
+  <img src="[INSERT PATH TO YOUR RECONSTRUCTION EXAMPLES HERE]" width="90%">
 </p>
 
 ---
 
-## 🚀 Come Iniziare
+## 🚀 Getting Started
 
-### Prerequisiti
+### Prerequisites
 
 * Python 3.8+
 * PyTorch 1.10+
@@ -57,51 +57,51 @@ Il flusso di dati attraverso il modello è il seguente:
 * matplotlib
 * Pillow (PIL)
 
-### Installazione
+### Installation
 
-1.  Clona il repository:
-    ```bash
-    git clone [https://github.com/tuo-username/tuo-repo.git](https://github.com/tuo-username/tuo-repo.git)
-    cd tuo-repo
-    ```
+* Open and run directly on Kaggle!
+  If you are using Google Colab, Jupyter or another notebook rembember to import the orginal MVtecAD a BTAD dataset.
 
-2.  Installa le dipendenze:
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Training & Fine-Tuning
 
-### Training e Fine-Tuning
-
-Il processo si svolge in due fasi: pre-training e fine-tuning.
+The process is divided in many section, first cames the data augmentation and then into a pre-training and a fine-tuning stage. We noted that after about 80 epochs a plateau is reached and loss starts to decrease low. Anyway if you have time and want better performance we suggest to try with more epochs, especially in training (200-300). 
 
 1.  **Pre-training**:
-    ```bash
-    python pretrain.py --dataset_path /percorso/al/tuo/dataset --class_name screw
-    ```
 
-2.  **Fine-tuning e Valutazione**:
-    ```bash
-    python finetune.py --pretrained_model_path /percorso/al/modello.pth --dataset_path /percorso/al/tuo/dataset
-    ```
+  In this stage is used a total loss calculated as the weighted sum of the reconstruction loss and   ssim - Structural Similarity Index Measure loss. 
 
----
+2.  **Fine-tuning & Validation**:
 
-## 📊 Risultati
+   Here we have defined as reconstruction loss the MSE on image from patches reconstruction. 
+   In this stage we also evaluate the still progressing model on the validation set in order to
+   get what is happening under the wood: is our model improving with fine-tuning or not? This is 
+   the right place for this question: **F1, AUC, ROC** curve and **AUPRO** are the metrics used   
+   to validate the process. Especially AUC to decide when to stop the FT and save our 'best' model.
 
-Il modello raggiunge performance competitive sui dataset MVTec AD e BTAD. Le metriche chiave utilizzate per la valutazione sono **AUC** (a livello di immagine), **F1 Score** e **AUPRO** (a livello di pixel per la localizzazione).
+   Validation set is also fundamental to define dinamically, according to the fine-tuning evolution, a threshold
+   to separete 'good' samples from anomalies. We tried also to define a static threshold based on train good 
+   samples distribution but according to our experiments a dinamically updated thersold wich moves led by validation
+   results could give a slightly discrimination between good and anomaly samples.  
+   
+## 📊 Results
+
+The model achieves good performance on the MVTec AD and BTAD datasets. Key evaluation metrics include image-level **AUC** and **F1-Score**, as well as the pixel-level **AUPRO** for localization accuracy. 
 
 <p align="center">
-  <img src="[INSERISCI QUI IL PERCORSO AI GRAFICI ROC E ISTOGRAMMA]" width="90%">
+  <img src="[INSERT PATH TO YOUR ROC & HISTOGRAM PLOTS HERE]" width="90%">
 </p>
 
-| Classe     | AUC Immagine | F1 Score | AUPRO  |
-| :--------- | :----------: | :------: | :----: |
-| `screw`    |     0.98     |   0.95   |  0.96  |
-| `bottle`   |      ...     |    ...   |   ...  |
-| `cable`    |      ...     |    ...   |   ...  |
+| Class      | Image AUC | F1-Score | AUPRO  |
+| :--------- | :-------: | :------: | :----: |
+| `screw`    |   0.98    |   0.95   |  0.96  |
+| `bottle`   |    ...    |    ...   |   ...  |
+| `cable`    |    ...    |    ...   |   ...  |
 ---
 
+## 🤝 Contributing
 
-## 📄 Licenza
+Contributions are always welcome! For major changes, please open an issue first to discuss what you would like to change.
 
-Questo progetto è distribuito sotto la Licenza .... Vedi il file `LICENSE` per maggiori dettagli.
+## 📄 License
+
+This project is distributed under the MIT License. See the `LICENSE` file for more details.
