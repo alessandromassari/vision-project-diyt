@@ -1,20 +1,20 @@
 # Advanced Masked Autoencoder for Industrial Anomaly Detection
 
-This project introduces an advanced **Masked Autoencoder (MAE)** architecture, built upon a Vision Transformer (ViT), for **unsupervised industrial anomaly detection and localization**. The model is designed to learn the normal appearance of an object from defect-free images and then identify anomalies by detecting deviations in its reconstruction.
+This project introduces an advanced **Masked Autoencoder (MAE)** architecture, built upon a Vision Transformer (ViT), for **unsupervised industrial anomaly detection and localization**. The model is designed to learn the normal appearance of objects from defect-free images and then identify anomalies by detecting deviations in its reconstruction.
 
-The core idea is that the model, once an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and pinpointing 
-anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
+The core idea is that the model, once trained as an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and localizing anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4d2da645-3c47-4d2e-9934-bbfbf65b7f4f" width="90%">
+  <br>
+  <em>Figure 1: Overview of the Advanced MAE architecture for industrial anomaly detection</em>
 </p>
 
 ---
 
 ## ✨ Key Features
 
-The vision that guides our work was to have a fast and light model trying to assure at the same time good and comparable performance, sort of 
-This model enhances the standard MAE framework with several innovative features tailored for high-performance anomaly detection: (spoiler: don't expect sota performance)
+The vision that guides our work was to develop a fast and lightweight model while ensuring good and comparable performance. This model enhances the standard MAE framework with several innovative features tailored for high-performance anomaly detection (note: don't expect state-of-the-art performance):
 
 * **Multi-Scale Feature Pyramid**: Unlike a standard MAE which only uses the final encoder output, this model extracts features from **intermediate encoder layers**. A `FeatureAggregationModule` then combines them to create a richer, multi-scale representation that captures both low-level textures and high-level semantics.
 
@@ -24,7 +24,7 @@ This model enhances the standard MAE framework with several innovative features 
 
 * **Dynamic Normalization (DyT)**: A custom `DyT` normalization layer is used in place of the standard `LayerNorm`. It introduces a learnable `alpha` parameter within a `tanh` activation, offering more flexible and dynamic normalization.
 
-* **Lightweight, Attentive Decoder**: Adhering to the MAE philosophy, the decoder is significantly shallower than the encoder (`depth_dec=2`). It is architecturally prepared to receive the aggregated features from the encoder pyramid, allowing for a more informed and context-aware reconstruction process.
+* **Lightweight, Attentive Decoder**: Following the MAE philosophy, the decoder is significantly shallower than the encoder (`depth_dec=2`). It is architecturally designed to receive the aggregated features from the encoder pyramid, allowing for a more informed and context-aware reconstruction process.
 
 ---
 
@@ -42,6 +42,8 @@ The data flows through the model as follows:
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc" width="80%">
+  <br>
+  <em>Figure 2: Detailed architecture diagram showing the data flow through the Advanced MAE model</em>
 </p>
 
 ---
@@ -60,49 +62,61 @@ The data flows through the model as follows:
 ### Installation
 
 * Open and run directly on Kaggle!
-  If you are using Google Colab, Jupyter or another notebook rembember to import the orginal MVtecAD a BTAD dataset.
+  If you are using Google Colab, Jupyter, or another notebook, remember to import the original MVTec AD and BTAD datasets.
 
 ### Training & Fine-Tuning
 
-The process is divided in many section, first cames the data augmentation and then into a pre-training and a fine-tuning stage. We noted that after about 80 epochs a plateau is reached and loss starts to decrease low. Anyway if you have time and want better performance we suggest to try with more epochs, especially in training (200-300). 
+The process is divided into several sections, beginning with data augmentation and then proceeding to pre-training and fine-tuning stages. We observed that after approximately 80 epochs, a plateau is reached and the loss starts to decrease slowly. However, if you have time and want better performance, we suggest trying with more epochs, especially during training (200-300 epochs). 
 
 1.  **Pre-training**:
 
-  In this stage is used a total loss calculated as the weighted sum of the reconstruction loss and   ssim - Structural Similarity Index Measure loss. 
+    In this stage, a total loss is calculated as the weighted sum of the reconstruction loss and SSIM (Structural Similarity Index Measure) loss. 
 
 2.  **Fine-tuning & Validation**:
 
-   Here we have defined as reconstruction loss the MSE on image from patches reconstruction. 
-   In this stage we also evaluate the still progressing model on the validation set in order to
-   get what is happening under the wood: is our model improving with fine-tuning or not? This is 
-   the right place for this question: **F1, AUC, ROC** curve and **AUPRO** are the metrics used   
-   to validate the process. Especially AUC to decide when to stop the FT and save our 'best' model.
+    Here we define the reconstruction loss as the MSE on images from patch reconstruction. 
+    In this stage, we also evaluate the progressing model on the validation set to understand what is happening under the hood: is our model improving with fine-tuning or not? This is the right place for this question. **F1, AUC, ROC** curve, and **AUPRO** are the metrics used to validate the process, with AUC being especially important for deciding when to stop fine-tuning and save our 'best' model.
 
-   Validation set is also fundamental to define dinamically, according to the fine-tuning evolution, a threshold
-   to separete 'good' samples from anomalies. We tried also to define a static threshold based on train good 
-   samples distribution but according to our experiments a dinamically updated thersold wich moves led by validation
-   results could give a slightly discrimination between good and anomaly samples.  
+    The validation set is also fundamental for dynamically defining a threshold to separate 'good' samples from anomalies according to the fine-tuning evolution. We also tried to define a static threshold based on the training good samples distribution, but according to our experiments, a dynamically updated threshold that moves according to validation results provides slightly better discrimination between good and anomalous samples.
 
    
    
 ## 📊 Results
 
-The model achieves good performance on the MVTec AD and BTAD datasets. Key evaluation metrics include image-level **AUC** and **F1-Score**, as well as the pixel-level **AUPRO** for localization accuracy. 
+The model achieves good performance on the MVTec AD and BTAD datasets. Key evaluation metrics include image-level **AUC** and **F1-Score**, as well as the pixel-level **AUPRO** for localization accuracy. However, we found very contrasting results: some classes are particularly well detected, while others perform less favorably. 
 
 <p align="center">
-  <img src="[INSERT PATH TO YOUR ROC & HISTOGRAM PLOTS HERE]" width="90%">
+  <img src="https://github.com/user-attachments/assets/1ee3b2f8-7a5e-4f30-8175-72359ebe4ce6" width="90%">
+  <br>
+  <em>Figure 3: Performance results on MVTec AD dataset showing class-wise AUC and F1-Score metrics</em>
 </p>
 
-| Class      | Image AUC | F1-Score | AUPRO  |
-| :--------- | :-------: | :------: | :----: |
-| `screw`    |    0.98    |   0.95   |  0.96  |
-| `bottle`   |    0.48    |  0.86    |  0.33  |
-| `cable`    |    0.51    |    0.75  |    0.3    |
-| 'capsule'  |   0.58    |   0.91   |      
----
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8b135c0c-6570-41ca-b3cd-1d0f252980b5" width="90%">
+  <br>
+  <em>Figure 4: Detailed performance analysis and comparison across different object categories</em>
+</p>
 
-## 🤝 Contributing
-Probably after this experience, according to our classes we still improve this project to get better results. So feel free to reach us with questions, ideas and suggestions. 
+## 🤝 What We Bring Home
+
+This project has provided valuable insights and learning experiences that we plan to build upon in future iterations. Based on our experimental results and analysis, we have identified several key takeaways and areas for improvement:
+
+**Technical Insights:**
+- The multi-scale feature pyramid approach shows promise but requires further optimization for consistent performance across all object categories
+- Block-wise masking strategy demonstrates improved spatial understanding compared to random masking, though fine-tuning the block size parameters could yield better results
+- Dynamic thresholding based on validation performance proves more effective than static threshold approaches, suggesting the importance of adaptive decision boundaries
+
+**Performance Analysis:**
+- Class-specific performance variations indicate that certain object types benefit more from our architectural choices than others
+- The plateau effect observed around 80 epochs suggests potential for more sophisticated learning rate scheduling or regularization techniques
+- The hybrid positional embedding approach shows potential but may need category-specific tuning
+
+**Future Directions:**
+- We plan to investigate class-specific architectural modifications (if we have extra time) to address the performance inconsistencies
+- Extended training with more sophisticated optimization strategies could potentially push beyond the current performance plateau
+- Integration of additional loss functions and regularization techniques may improve generalization across diverse anomaly types
+
+Feel free to reach out to us with questions, ideas, and suggestions as we continue to refine and improve this project based on these learnings.
 
 ## 📄 License
 
