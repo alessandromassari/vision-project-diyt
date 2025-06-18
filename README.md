@@ -2,10 +2,11 @@
 
 This project introduces an advanced **Masked Autoencoder (MAE)** architecture, built upon a Vision Transformer (ViT), for **unsupervised industrial anomaly detection and localization**. The model is designed to learn the normal appearance of an object from defect-free images and then identify anomalies by detecting deviations in its reconstruction.
 
-The core idea is that the model, once an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and pinpointing anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
+The core idea is that the model, once an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and pinpointing 
+anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc" width="80%">
+  <img src="https://github.com/user-attachments/assets/4d2da645-3c47-4d2e-9934-bbfbf65b7f4f" width="90%">
 </p>
 
 ---
@@ -40,7 +41,7 @@ The data flows through the model as follows:
 7.  **Output**: The model outputs the reconstructed image patches.
 
 <p align="center">
-  <img src="[INSERT PATH TO YOUR RECONSTRUCTION EXAMPLES HERE]" width="90%">
+  <img src="https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc" width="80%">
 </p>
 
 ---
@@ -81,6 +82,8 @@ The process is divided in many section, first cames the data augmentation and th
    to separete 'good' samples from anomalies. We tried also to define a static threshold based on train good 
    samples distribution but according to our experiments a dinamically updated thersold wich moves led by validation
    results could give a slightly discrimination between good and anomaly samples.  
+
+   
    
 ## 📊 Results
 
@@ -92,15 +95,15 @@ The model achieves good performance on the MVTec AD and BTAD datasets. Key evalu
 
 | Class      | Image AUC | F1-Score | AUPRO  |
 | :--------- | :-------: | :------: | :----: |
-| `screw`    |   0.98    |   0.95   |  0.96  |
-| `bottle`   |    ...    |    ...   |   ...  |
-| `cable`    |    ...    |    ...   |   ...  |
+| `screw`    |    0.98    |   0.95   |  0.96  |
+| `bottle`   |    0.48    |  0.86    |  0.33  |
+| `cable`    |    0.51    |    0.75  |    0.3    |
+| 'capsule'  |   0.58    |   0.91   |      
 ---
 
 ## 🤝 Contributing
-
-Contributions are always welcome! For major changes, please open an issue first to discuss what you would like to change.
+Probably after this experience, according to our classes we still improve this project to get better results. So feel free to reach us with questions, ideas and suggestions. 
 
 ## 📄 License
 
-This project is distributed under the MIT License. See the `LICENSE` file for more details.
+This project is distributed under the MIT License.
