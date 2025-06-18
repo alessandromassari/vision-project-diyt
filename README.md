@@ -5,8 +5,7 @@ This project introduces an advanced **Masked Autoencoder (MAE)** architecture, b
 The core idea is that the model, once an expert on "normal" data, will fail to accurately reconstruct unseen defects. This reconstruction error serves as a powerful signal for both detecting and pinpointing anomalies. The model has been validated on the standard **MVTec AD** and **BTAD** datasets.
 
 <p align="center">
-  <img src="[![image](https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc)
-]" width="80%">
+  <img src="https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc" width="80%">
 </p>
 
 ---
