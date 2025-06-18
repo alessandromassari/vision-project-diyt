@@ -8,7 +8,7 @@ The core idea is that the model, once trained as an expert on "normal" data, wil
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4d2da645-3c47-4d2e-9934-bbfbf65b7f4f" width="90%">
   <br>
-  <em>Figure 1: Overview of the Advanced MAE architecture for industrial anomaly detection</em>
+  <em>Figure 1: Result achieved on 'Hazelnut' class after fine-tuning</em>
 </p>
 
 ---
@@ -44,7 +44,7 @@ The data flows through the model as follows:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/49f1e3f7-eaa7-4694-85a7-291bc1258ecc" width="80%">
   <br>
-  <em>Figure 2: Detailed architecture diagram showing the data flow through the Advanced MAE model</em>
+  <em>Figure 2: Detailed architecture diagram showing the data flow through our MAE model</em>
 </p>
 
 ---
@@ -89,13 +89,13 @@ The model achieves good performance on the MVTec AD and BTAD datasets. Key evalu
 <p align="center">
   <img src="https://github.com/user-attachments/assets/1ee3b2f8-7a5e-4f30-8175-72359ebe4ce6" width="90%">
   <br>
-  <em>Figure 3: Performance results on MVTec AD dataset showing class-wise AUC and F1-Score metrics</em>
+  <em>Figure 3: An example of a good error localization on 'Tile' class </em>
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/8b135c0c-6570-41ca-b3cd-1d0f252980b5" width="90%">
   <br>
-  <em>Figure 4: Detailed performance analysis and comparison across different object categories</em>
+  <em>Figure 4: An example of a not so good error localization on 'Transistor' class </em>
 </p>
 
 ## 🤝 What We Bring Home
