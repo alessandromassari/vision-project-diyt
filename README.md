@@ -1,4 +1,5 @@
 # Advanced Masked Autoencoder for Industrial Anomaly Detection
+## Sapienza Università degli Studi di Roma - Computer Vision class project - 2024/25
 
 This project introduces an advanced **Masked Autoencoder (MAE)** architecture, built upon a Vision Transformer (ViT), for **unsupervised industrial anomaly detection and localization**. The model is designed to learn the normal appearance of objects from defect-free images and then identify anomalies by detecting deviations in its reconstruction.
 
