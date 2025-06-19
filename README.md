@@ -64,6 +64,13 @@ The data flows through the model as follows:
 
 * Open and run directly on Kaggle!
   If you are using Google Colab, Jupyter, or another notebook, remember to import the original MVTec AD and BTAD datasets.
+  Here the links to the datasets on Kaggle:
+  
+  **MVTecAD:** https://www.kaggle.com/datasets/ipythonx/mvtec-ad
+  
+  **Our augmented MVTecAD:** https://www.kaggle.com/datasets/alemassari/mvtec-ad-augmneted-trainset
+  
+  **BTAD:** https://www.kaggle.com/datasets/thtuan/btad-beantech-anomaly-detection
 
 ### Training & Fine-Tuning
 
