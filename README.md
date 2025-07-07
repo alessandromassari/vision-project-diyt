@@ -127,5 +127,11 @@ This project has provided valuable insights and learning experiences that we pla
 Feel free to reach out to us with questions, ideas, and suggestions as we continue to refine and improve this project based on these learnings.
 
 ## 📄 License
+## License
 
-This project is distributed under the MIT License.
+This project is released under a mixed license:
+
+- **Code**: MIT License — See LICENSE
+- **Models and documentation**: CC BY-NC 4.0 — Attribution required, commercial use is not allowed.
+
+© 2025 [Alessandro Massari, Matteo Pelliccione]
