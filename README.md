@@ -127,7 +127,6 @@ This project has provided valuable insights and learning experiences that we pla
 Feel free to reach out to us with questions, ideas, and suggestions as we continue to refine and improve this project based on these learnings.
 
 ## 📄 License
-## License
 
 This project is released under a mixed license:
 
